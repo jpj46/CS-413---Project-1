@@ -27,7 +27,7 @@ spider.on( 'mousedown', mouseHandler );
 scoreCounter = 0;
 let scoreText = new PIXI.Text('Score: ' + scoreCounter, 
       {fontFamily : 'Calibri', fontSize: 25, fill : 0x525252, align : 'center'});
-stage.addChild(scoreText);
+stage.addChild( scoreText );
 // hi
 
 // Animate the sprite and spawn the nanas!
@@ -45,9 +45,10 @@ function animate()
    //document.addEventListener( 'keydown', keyPressEventHandler );
 }
 
-function mouseHandler( click )
+function mouseHandler( moving_spider )
 {
    scoreCounter++;
+   stage.removeChild( moving_spider );
    //document.getElementById('coord').innerHTML = ("Click X: " + click.x + " Click Y: " + click.y);
 }
 
@@ -56,42 +57,7 @@ function spawnBanana()
    var moving_spider = new PIXI.Sprite( PIXI.Texture.fromImage( "Spider sprite.png" ) );
    stage.addChild(moving_spider);
    moving_spider.interactive = true;
-   moving_spider.on( 'mousedown', mouseHandler );
+   moving_spider.on( 'mousedown', function() { mouseHandler( moving_spider )} );
    moving_spider.x = Math.floor( Math.random() * 600 );
    moving_spider.y = Math.floor( Math.random() * 600 );
 }
-
-
-
-
-
-
-/*
-var gameport = document.getElementById("gameport");
-
-var renderer = PIXI.autoDetectRenderer(400, 400, {backgroundColor: 0xcfcfcf});
-gameport.appendChild(renderer.view);
-
-var stage = new PIXI.Container();
-
-var hero = new PIXI.Sprite(PIXI.Texture.fromImage("Spider sprite.png"));
-
-hero.position.x = 100;
-hero.position.y = 100;
-stage.addChild(hero);
-
-function mouseHandler(e) {
-   var new_x = Math.floor( Math.random() * 300 ) + 50;
-   var new_y = Math.floor( Math.random() * 300 ) + 50;
-   createjs.Tween.get( hero.position ).to( { x: new_x, y: new_y }, 1000 );
-}
-
-hero.interactive = true;
-hero.on('mousedown', mouseHandler);
-
-function animate() {
-  requestAnimationFrame(animate);
-  renderer.render(stage);
-}
-animate();
-*/
