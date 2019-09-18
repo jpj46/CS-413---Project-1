@@ -32,7 +32,7 @@ stage.addChild( scoreText );
 
 // Animate the sprite and spawn the nanas!
 animate();
-var bananaSpawner = setInterval( spawnBanana, Math.floor( Math.random() * 3000 ) );
+var bananaSpawner = setInterval( spawnBanana, Math.floor( Math.random() * 5000 ) );
 
 
 // Animates the stage
@@ -57,7 +57,14 @@ function spawnBanana()
    var moving_spider = new PIXI.Sprite( PIXI.Texture.fromImage( "Spider sprite.png" ) );
    stage.addChild(moving_spider);
    moving_spider.interactive = true;
-   moving_spider.on( 'mousedown', function() { mouseHandler( moving_spider )} );
+   moving_spider.on( 'mousedown', function() { mouseHandler( moving_spider ) } );
    moving_spider.x = Math.floor( Math.random() * 600 );
-   moving_spider.y = Math.floor( Math.random() * 600 );
+   moving_spider.y = Math.floor( 25 );
+   createjs.Tween.get( moving_spider.position ).to( { y: 700 }, 7500 );
+   setInterval( function() { checkUnclickedBanana( moving_spider ) }, 8000);
+}
+
+function checkUnclickedBanana( moving_spider )
+{
+   stage.removeChild( moving_spider );
 }
