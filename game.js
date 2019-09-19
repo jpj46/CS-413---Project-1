@@ -107,7 +107,7 @@ function animate()
 // Randomizes spawn time of bananas
 function bananaRandomizer()
 {
-   var randomSpawnTime = Math.random() * 3000;
+   var randomSpawnTime = Math.random() * 2500;
    var gameTimeout = setTimeout( function() { spawnBanana(); bananaRandomizer(); }, randomSpawnTime );
 }
 
@@ -133,26 +133,27 @@ function spawnBanana()
       
       // Make random new x value for banana to fall to, and pick a number 0 - 5 for array bounce type
       // Make sure banana stays in stage
-      if( moving_banana.x - 300 < background.width )
+      if( moving_banana.x - 200 < background.width )
       {
-         var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) );
+         var rand_x = Math.floor( moving_banana.x + ( Math.random() * 200 ) );
       }
       
-      if( moving_banana.x + 300 > background.width )
+      if( moving_banana.x + 200 > background.width )
       {
-         var rand_x = Math.floor( moving_banana.x - ( Math.random() * 300 ) );
+         var rand_x = Math.floor( moving_banana.x - ( Math.random() * 200 ) );
       }
       
       else
       {
-         var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) - ( Math.random() * 300 ) );
+         var rand_x = Math.floor( moving_banana.x + ( Math.random() * 200 ) - ( Math.random() * 200 ) );
       }
       
       var randNumForFallList = Math.floor( Math.random() * 5 );
       var type = fallList[randNumForFallList];
       
       createjs.Tween.get( moving_banana.position ).to( { x: rand_x, y: 700 }, 5000, type );
-      setInterval( function() { checkUnclickedBanana( moving_banana ) }, 10000);
+      setInterval( function() { checkUnclickedBanana( moving_banana ) }, 
+         ( 10 + Math.floor( Math.random() * 5000 ) ) );
    }
 }
 
