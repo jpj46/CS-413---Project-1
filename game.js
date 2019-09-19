@@ -33,11 +33,24 @@ background.addChild(ground);
 background.addChild(cloud1);
 background.addChild(cloud2);
 
+var rectangle = new PIXI.Graphics();
+rectangle.beginFill(0x000000);
+rectangle.drawRect(0, 0, 640, 30);
+rectangle.endFill();
+stage.addChild( rectangle );
+
 // Add score text and score counter
 scoreCounter = 0;
+timeCounter = 30;
 var scoreText = new PIXI.Text('Score: ' + scoreCounter, 
-      {fontFamily : 'Calibri', fontSize: 25, fill : 0x000000, align : 'center'});
+      {fontFamily : 'Calibri', fontSize: 25, fill : 0xFFFFFF, align : 'center'});
+var timeText = new PIXI.Text('Time: ' + timeCounter, 
+      {fontFamily : 'Calibri', fontSize: 25, fill : 0xFFFFFF, align : 'center'});
+scoreText.x = 5;
+timeText.x = 525;
 stage.addChild( scoreText );
+stage.addChild( timeText );
+
 
 // Make list for banana fall types
 var fallList = [createjs.Ease.bounceOut,
@@ -69,7 +82,11 @@ function animate()
 function bananaRandomizer()
 {
    var randomSpawnTime = Math.random() * 3000;
-   setTimeout( function() { spawnBanana(); bananaRandomizer() }, randomSpawnTime );
+   var gameTimeout = setTimeout( function() { spawnBanana(); bananaRandomizer(); }, randomSpawnTime );
+   if( timecounter == 0 )
+   {
+      clearTimeout( gameTimeout );
+   }
 }
 
 // Handles mouse events
@@ -88,10 +105,25 @@ function spawnBanana()
    moving_banana.interactive = true;
    moving_banana.on( 'mousedown', function() { mouseHandler( moving_banana ) } );
    moving_banana.x = Math.floor( Math.random() * 600 );
-   moving_banana.y = 25;
+   moving_banana.y = 30;
    
    // Make random new x value for banana to fall to, and pick a number 0 - 5 for array bounce type
-   var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) - ( Math.random() * 300 ) );
+   // Make sure banana stays in stage
+   if( moving_banana.x - 300 < background.width )
+   {
+      var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) );
+   }
+   
+   if( moving_banana.x + 300 > background.width )
+   {
+      var rand_x = Math.floor( moving_banana.x - ( Math.random() * 300 ) );
+   }
+   
+   else
+   {
+      var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) - ( Math.random() * 300 ) );
+   }
+   
    var randNumForFallList = Math.floor( Math.random() * 5 );
    var type = fallList[randNumForFallList];
    
