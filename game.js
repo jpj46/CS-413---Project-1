@@ -41,7 +41,7 @@ stage.addChild( rectangle );
 
 // Add score text and score counter
 scoreCounter = 0;
-timeCounter = 30;
+timeCounter = 1;
 var scoreText = new PIXI.Text('Score: ' + scoreCounter, 
       {fontFamily : 'Calibri', fontSize: 25, fill : 0xFFFFFF, align : 'center'});
 var timeText = new PIXI.Text('Time: ' + timeCounter, 
@@ -61,11 +61,35 @@ var fallList = [createjs.Ease.bounceOut,
                 createjs.Ease.bounceIn];
 
 // Animate the sprite and spawn the nanas!
+var timeOut = setInterval( function() { timeCounter -= 1 }, 1000 );
+setInterval( checkGameEnd, 500 );
 animate();
 bananaRandomizer();
+checkGameEnd();
 createjs.Tween.get( cloud1.position ).to( { x: 640 }, 100000);
 createjs.Tween.get( cloud2.position ).to( { x: -640 }, 100000);
 
+
+function checkGameEnd()
+{
+   if( timeCounter == 0 )
+   {
+      clearInterval( timeOut );
+      
+      var rectangle = new PIXI.Graphics();
+      rectangle.beginFill(0x000000);
+      rectangle.drawRect(70, 180, 500, 250);
+      rectangle.endFill();
+      var endText = new PIXI.Text('Game over! Your score is: ' + scoreCounter, 
+         { fontFamily : 'Calibri', fontSize: 25, fill : 0xFFFFFF, align : 'center' } );
+      endText.x = 140;
+      endText.y = 285;
+         
+      background.addChild( rectangle );
+      background.addChild( endText );
+   }
+
+}
 
 // Animates the stage
 function animate() 
@@ -73,7 +97,9 @@ function animate()
    renderer.render( stage );
    requestAnimationFrame( animate );
    scoreText.setText( 'Score: ' + scoreCounter );
+   timeText.setText( 'Time: ' + timeCounter );
    sun.rotation += .01;
+  
    
    //document.addEventListener( 'keydown', keyPressEventHandler );
 }
@@ -83,10 +109,6 @@ function bananaRandomizer()
 {
    var randomSpawnTime = Math.random() * 3000;
    var gameTimeout = setTimeout( function() { spawnBanana(); bananaRandomizer(); }, randomSpawnTime );
-   if( timecounter == 0 )
-   {
-      clearTimeout( gameTimeout );
-   }
 }
 
 // Handles mouse events
@@ -100,35 +122,38 @@ function mouseHandler( moving_banana )
 // Spawns bananas into game, despawns them after a certain time
 function spawnBanana()
 {
-   var moving_banana = new PIXI.Sprite( PIXI.Texture.fromImage( "assets/Banana.png" ) );
-   background.addChild( moving_banana );
-   moving_banana.interactive = true;
-   moving_banana.on( 'mousedown', function() { mouseHandler( moving_banana ) } );
-   moving_banana.x = Math.floor( Math.random() * 600 );
-   moving_banana.y = 30;
-   
-   // Make random new x value for banana to fall to, and pick a number 0 - 5 for array bounce type
-   // Make sure banana stays in stage
-   if( moving_banana.x - 300 < background.width )
+   if( timeCounter > 0 )
    {
-      var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) );
+      var moving_banana = new PIXI.Sprite( PIXI.Texture.fromImage( "assets/Banana.png" ) );
+      background.addChild( moving_banana );
+      moving_banana.interactive = true;
+      moving_banana.on( 'mousedown', function() { mouseHandler( moving_banana ) } );
+      moving_banana.x = Math.floor( Math.random() * 600 );
+      moving_banana.y = 30;
+      
+      // Make random new x value for banana to fall to, and pick a number 0 - 5 for array bounce type
+      // Make sure banana stays in stage
+      if( moving_banana.x - 300 < background.width )
+      {
+         var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) );
+      }
+      
+      if( moving_banana.x + 300 > background.width )
+      {
+         var rand_x = Math.floor( moving_banana.x - ( Math.random() * 300 ) );
+      }
+      
+      else
+      {
+         var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) - ( Math.random() * 300 ) );
+      }
+      
+      var randNumForFallList = Math.floor( Math.random() * 5 );
+      var type = fallList[randNumForFallList];
+      
+      createjs.Tween.get( moving_banana.position ).to( { x: rand_x, y: 700 }, 5000, type );
+      setInterval( function() { checkUnclickedBanana( moving_banana ) }, 10000);
    }
-   
-   if( moving_banana.x + 300 > background.width )
-   {
-      var rand_x = Math.floor( moving_banana.x - ( Math.random() * 300 ) );
-   }
-   
-   else
-   {
-      var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) - ( Math.random() * 300 ) );
-   }
-   
-   var randNumForFallList = Math.floor( Math.random() * 5 );
-   var type = fallList[randNumForFallList];
-   
-   createjs.Tween.get( moving_banana.position ).to( { x: rand_x, y: 700 }, 5000, type );
-   setInterval( function() { checkUnclickedBanana( moving_banana ) }, 10000);
 }
 
 // If banana is unclicked after moving off screen, remove from game
