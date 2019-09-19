@@ -35,9 +35,17 @@ background.addChild(cloud2);
 
 // Add score text and score counter
 scoreCounter = 0;
-let scoreText = new PIXI.Text('Score: ' + scoreCounter, 
+var scoreText = new PIXI.Text('Score: ' + scoreCounter, 
       {fontFamily : 'Calibri', fontSize: 25, fill : 0x000000, align : 'center'});
 stage.addChild( scoreText );
+
+// Make list for banana fall types
+var fallList = [createjs.Ease.bounceOut,
+                createjs.Ease.linear,
+                createjs.Ease.backOut,
+                createjs.Ease.sineInOut,
+                createjs.Ease.cubicOut,
+                createjs.Ease.bounceIn];
 
 // Animate the sprite and spawn the nanas!
 animate();
@@ -60,7 +68,7 @@ function animate()
 // Randomizes spawn time of bananas
 function bananaRandomizer()
 {
-   var randomSpawnTime = Math.floor( Math.random() * 2000 );
+   var randomSpawnTime = Math.random() * 3000;
    setTimeout( function() { spawnBanana(); bananaRandomizer() }, randomSpawnTime );
 }
 
@@ -81,9 +89,14 @@ function spawnBanana()
    moving_banana.on( 'mousedown', function() { mouseHandler( moving_banana ) } );
    moving_banana.x = Math.floor( Math.random() * 600 );
    moving_banana.y = 25;
-   var rand_x = Math.floor( moving_banana.x + ( Math.random() * 200 ) - ( Math.random() * 200 ) );
-   createjs.Tween.get( moving_banana.position ).to( { x: rand_x, y: 700 }, 5000 );
-   setInterval( function() { checkUnclickedBanana( moving_banana ) }, 8000);
+   
+   // Make random new x value for banana to fall to, and pick a number 0 - 5 for array bounce type
+   var rand_x = Math.floor( moving_banana.x + ( Math.random() * 300 ) - ( Math.random() * 300 ) );
+   var randNumForFallList = Math.floor( Math.random() * 5 );
+   var type = fallList[randNumForFallList];
+   
+   createjs.Tween.get( moving_banana.position ).to( { x: rand_x, y: 700 }, 5000, type );
+   setInterval( function() { checkUnclickedBanana( moving_banana ) }, 10000);
 }
 
 // If banana is unclicked after moving off screen, remove from game
