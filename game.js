@@ -41,7 +41,7 @@ stage.addChild( rectangle );
 
 // Add score text and score counter
 scoreCounter = 0;
-timeCounter = 1;
+timeCounter = 30;
 var scoreText = new PIXI.Text('Score: ' + scoreCounter, 
       {fontFamily : 'Calibri', fontSize: 25, fill : 0xFFFFFF, align : 'center'});
 var timeText = new PIXI.Text('Time: ' + timeCounter, 
