@@ -1,3 +1,4 @@
+// Make the game
 var gameport = document.getElementById( "gameport" );
 var renderer = PIXI.autoDetectRenderer( 640, 640, {backgroundColor: 0x999999} );
 gameport.appendChild( renderer.view );
@@ -52,7 +53,7 @@ stage.addChild( scoreText );
 stage.addChild( timeText );
 
 
-// Make list for banana fall types
+// Make list for banana tween fall types
 var fallList = [createjs.Ease.bounceOut,
                 createjs.Ease.linear,
                 createjs.Ease.backOut,
@@ -69,9 +70,10 @@ checkGameEnd();
 createjs.Tween.get( cloud1.position ).to( { x: 640 }, 100000);
 createjs.Tween.get( cloud2.position ).to( { x: -640 }, 100000);
 
-
+// Check the timer to see whether the game has ended
 function checkGameEnd()
 {
+   // If game is over, create pop up that displays score
    if( timeCounter == 0 )
    {
       clearInterval( timeOut );
@@ -99,9 +101,6 @@ function animate()
    scoreText.setText( 'Score: ' + scoreCounter );
    timeText.setText( 'Time: ' + timeCounter );
    sun.rotation += .01;
-  
-   
-   //document.addEventListener( 'keydown', keyPressEventHandler );
 }
 
 // Randomizes spawn time of bananas
@@ -116,7 +115,6 @@ function mouseHandler( moving_banana )
 {
    scoreCounter++;
    background.removeChild( moving_banana );
-   //document.getElementById('coord').innerHTML = ("Click X: " + click.x + " Click Y: " + click.y);
 }
 
 // Spawns bananas into game, despawns them after a certain time
@@ -124,6 +122,7 @@ function spawnBanana()
 {
    if( timeCounter > 0 )
    {
+      // Creates a banana to call
       var moving_banana = new PIXI.Sprite( PIXI.Texture.fromImage( "assets/Banana.png" ) );
       background.addChild( moving_banana );
       moving_banana.interactive = true;
@@ -148,6 +147,7 @@ function spawnBanana()
          var rand_x = Math.floor( moving_banana.x + ( Math.random() * 200 ) - ( Math.random() * 200 ) );
       }
       
+      // Generates a random number to determine tweening path choosen from list
       var randNumForFallList = Math.floor( Math.random() * 5 );
       var type = fallList[randNumForFallList];
       
